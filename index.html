@@ -1,0 +1,39 @@
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}?v=25"
+>
+
+<section class="hero">
+    <span class="eyebrow">QUIZNOVA LEARNING ARENA</span>
+    <h1>Choose your <span class="gradient-text">challenge!</span></h1>
+    <p>Select a category first, then choose any unlocked level.</p>
+</section>
+
+<section class="quiz-card">
+    <h2>Select Category</h2>
+
+    <div class="options-list">
+        {% for key, name in categories.items() %}
+        <label class="answer-option">
+            <input type="radio" name="category"
+                   form="level-form" value="{{ key }}"
+                   {% if loop.first %}checked{% endif %}>
+            <span class="option-text">{{ name }}</span>
+        </label>
+        {% endfor %}
+    </div>
+
+    <form id="level-form" action="{{ url_for('quiz') }}" method="GET">
+        <label for="level">Select Level</label>
+        <select id="level" name="level">
+            {% for number, data in levels.items() %}
+            <option value="{{ number }}">Level {{ number }}</option>
+            {% endfor %}
+        </select>
+
+        <button class="btn btn-primary" type="submit">
+            Start Selected Level →
+        </button>
+    </form>
+</section>
