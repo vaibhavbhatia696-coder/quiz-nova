@@ -1,0 +1,115 @@
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}?v=25"
+>
+
+{% extends "base.html" %}
+
+{% block title %}Question {{ number }} | QuizNova{% endblock %}
+
+{% block content %}
+<section class="quiz-page">
+    <div class="quiz-heading">
+        <span class="eyebrow">🧠 KNOWLEDGE CHALLENGE</span>
+        <h1>Let's test your <span class="gradient-text">skills!</span></h1>
+        <p>Choose the best answer before the time runs out.</p>
+    </div>
+
+    <div class="quiz-card">
+        <div class="quiz-meta">
+            <span class="question-count">
+                Question <strong>{{ number }}</strong> of {{ total }}
+            </span>
+            <div class="timer-pill" id="timer-pill">
+                <span>◷</span>
+                <span id="timer">{{ time_limit }}</span> sec
+            </div>
+        </div>
+
+        <div class="progress-track">
+            <div class="progress-fill"
+                 style="width: {{ (number / total * 100)|int }}%">
+            </div>
+        </div>
+
+        <form action="{{ url_for('quiz') }}" method="POST" id="quiz-form">
+            <h2 class="question-title">{{ question.question }}</h2>
+            <p class="select-hint">Select one answer</p>
+
+            <div class="options-list">
+                {% for option in question.options %}
+                <label class="answer-option">
+                    <input type="radio" name="answer" value="{{ option }}">
+                    <span class="option-indicator">
+                        {{ ["A", "B", "C", "D"][loop.index0] }}
+                    </span>
+                    <span class="option-text">{{ option }}</span>
+                    <span class="option-check">✓</span>
+                </label>
+                {% endfor %}
+            </div>
+
+            <div class="quiz-bottom">
+                <span class="no-negative">✨ No negative marking</span>
+                <button type="submit" class="btn btn-primary next-btn">
+                    {% if number == total %}
+                        Finish Quiz →
+                    {% else %}
+                        Next Question →
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <p class="quiz-footer-note">💡 Stay focused. You've got this!</p>
+</section>
+
+<script>
+    (() => {
+        let remaining = {{ time_limit }};
+        const timer = document.getElementById("timer");
+        const timerPill = document.getElementById("timer-pill");
+        const form = document.getElementById("quiz-form");
+        let submitted = false;
+
+        function submitAnswer() {
+            if (submitted) return;
+            submitted = true;
+
+            const radios = form.querySelectorAll('input[name="answer"]');
+            const selected = Array.from(radios).find(radio => radio.checked);
+
+            if (!selected) {
+                const hidden = document.createElement("input");
+                hidden.type = "hidden";
+                hidden.name = "answer";
+                hidden.value = "";
+                form.appendChild(hidden);
+            }
+
+            form.submit();
+        }
+
+        form.addEventListener("submit", function (event) {
+            if (submitted) return;
+            submitted = true;
+        });
+
+        const countdown = setInterval(() => {
+            remaining--;
+            timer.textContent = Math.max(remaining, 0);
+
+            if (remaining <= 5) {
+                timerPill.classList.add("timer-danger");
+            }
+
+            if (remaining <= 0) {
+                clearInterval(countdown);
+                submitAnswer();
+            }
+        }, 1000);
+    })();
+</script>
+{% endblock %}

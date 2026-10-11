@@ -1,0 +1,103 @@
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}?v=25"
+>
+
+{% extends "base.html" %}
+
+{% block title %}Your Results | QuizNova{% endblock %}
+
+{% block content %}
+<section class="result-page">
+    <div class="result-heading">
+        <span class="eyebrow">🎉 QUIZ COMPLETED</span>
+        <h1>Your results are <span class="gradient-text">in!</span></h1>
+        <p>Every attempt is a step towards learning more.</p>
+    </div>
+
+    <div class="result-card">
+        <div class="result-trophy">{{ result_icon }}</div>
+        <p class="result-label">YOUR FINAL SCORE</p>
+
+        <div class="score-display">
+            <span class="score-number">{{ score }}</span>
+            <span class="score-total">/ {{ total }}</span>
+        </div>
+
+        <div class="percentage-pill">{{ percentage }}% SCORE</div>
+
+        <div class="result-progress">
+            <div class="result-progress-fill"
+                 style="width: {{ percentage }}%">
+            </div>
+        </div>
+
+        <h2 class="result-message">{{ message }}</h2>
+
+        <div class="result-stats">
+            <div class="result-stat">
+                <span class="result-stat-icon correct-icon">✓</span>
+                <strong>{{ score }}</strong>
+                <span>Correct</span>
+            </div>
+
+            <div class="result-stat">
+                <span class="result-stat-icon wrong-icon">✕</span>
+                <strong>{{ total - score }}</strong>
+                <span>Incorrect</span>
+            </div>
+
+            <div class="result-stat">
+                <span class="result-stat-icon purple-icon">%</span>
+                <strong>{{ percentage }}%</strong>
+                <span>Accuracy</span>
+            </div>
+        </div>
+
+        <a href="{{ url_for('restart') }}" class="btn btn-primary result-button">
+            ↻ Play Again
+        </a>
+        <a href="{{ url_for('home') }}" class="home-link">
+            Back to Home
+        </a>
+    </div>
+
+    <div class="review-section">
+        <div class="section-heading">
+            <span class="eyebrow">📖 LEARNING CORNER</span>
+            <h2>Review your answers</h2>
+            <p>Check your responses and learn the correct answers.</p>
+        </div>
+
+        <div class="review-list">
+            {% for item in review %}
+            <article class="review-card">
+                <div class="review-top">
+                    <span class="review-number">Q{{ item.number }}</span>
+                    <span class="review-status
+                        {% if item.is_correct %}review-correct{% else %}review-wrong{% endif %}">
+                        {% if item.is_correct %}✓ Correct{% else %}✕ Incorrect{% endif %}
+                    </span>
+                </div>
+
+                <h3>{{ item.question }}</h3>
+
+                <p class="review-answer">
+                    <strong>Your answer:</strong>
+                    {{ item.selected if item.selected else "Not answered" }}
+                </p>
+
+                {% if not item.is_correct %}
+                <p class="correct-answer">
+                    <strong>Correct answer:</strong> {{ item.correct }}
+                </p>
+                {% endif %}
+
+                <p class="explanation">💡 {{ item.explanation }}</p>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
