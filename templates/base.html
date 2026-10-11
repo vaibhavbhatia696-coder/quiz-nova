@@ -1,3 +1,4 @@
+ ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{% block title %}QuizNova Learning Arena{% endblock %}</title>
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}?v=11">
-    <style.css') }}?v=2">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}?v=26">
 </head>
+
 <body>
 
     <nav class="navbar">
         <a class="logo" href="{{ url_for('home') }}">🎯 QuizNova</a>
+
         <div class="nav-links">
             <a href="{{ url_for('home') }}">Home</a>
             <a href="{{ url_for('home') }}">Categories</a>
@@ -31,3 +34,4 @@
 
 </body>
 </html>
+```
